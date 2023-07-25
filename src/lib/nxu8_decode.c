@@ -58,10 +58,6 @@ struct nxu8_decoder *nxu8_init_decoder(size_t buf_sz, uint8_t *buf) {
 	return decoder;
 }
 
-int annotate(struct nxu8_decoder *decoder, uint32_t addr) {
-
-}
-
 int nxu8_anno(struct nxu8_decoder *decoder, uint32_t addr) {
 	if (addr & 1) {
 		printf("[-] Annotation starting address must be aligned\n");
