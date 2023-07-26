@@ -34,6 +34,15 @@ struct nxu8_decoder *nxu8_init_decoder_file(char *path) {
 	return nxu8_init_decoder(infile_sz, buf);
 }
 
+struct nxu8_decoder *nxu8_init_minimal_decoder(size_t buf_sz, uint8_t *buf) {
+	struct nxu8_decoder *decoder = malloc(sizeof(struct nxu8_decoder));
+	decoder->buf_idx = 0;
+	decoder->buf_sz = buf_sz;
+	decoder->buf = buf;
+
+	return decoder;
+}
+
 // Initialise a decoder from a buffer
 struct nxu8_decoder *nxu8_init_decoder(size_t buf_sz, uint8_t *buf) {
 	// Initialise the decoder

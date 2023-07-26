@@ -51,6 +51,7 @@ struct nxu8_instr {
 uint16_t nxu8_read16(struct nxu8_decoder *decoder, uint32_t addr);
 
 struct nxu8_decoder *nxu8_init_decoder_file(char *path);
+struct nxu8_decoder *nxu8_init_minimal_decoder(size_t buf_sz, uint8_t *buf);
 struct nxu8_decoder *nxu8_init_decoder(size_t buf_sz, uint8_t *buf);
 
 struct nxu8_instr *nxu8_decode_instr(struct nxu8_decoder *decoder, uint32_t addr);

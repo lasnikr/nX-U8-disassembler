@@ -24,20 +24,6 @@ void readFromDecoder (struct nxu8_decoder *decoder) {
 	}
 }
 
-void hexStringToBytes(char* bytes) {
-    size_t stringLength = strlen(bytes);
-
-    if (stringLength % 2 != 0) {
-        fprintf(stderr, "Invalid input: The string length must be even.\n");
-        return;
-    }
-
-    size_t numBytes = stringLength / 2;
-    for (size_t i = 0; i < numBytes; ++i) {
-        sscanf(&bytes[i * 2], "%2hhx", &bytes[i]);
-    }
-}
-
 char* parseBinaryStringToBytes(const char* binaryString, size_t* numBytes) {
     size_t strLength = strlen(binaryString);
     *numBytes = strLength / 8;
@@ -94,8 +80,8 @@ int main(int argc, char **argv) {
 			line = parseBinaryStringToBytes(line, &len);
 
 			if (!line) continue;
-			
-			struct nxu8_decoder *decoder = nxu8_init_decoder(len,(uint8_t *)line);
+
+			struct nxu8_decoder *decoder = nxu8_init_minimal_decoder(len,(uint8_t *)line);
 			readFromDecoder(decoder);
 			free(line);
 		}
