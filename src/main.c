@@ -26,6 +26,11 @@ void readFromDecoder (struct nxu8_decoder *decoder) {
 }
 
 char* parseBinaryStringToBytes(const char* binaryString, size_t* numBytes) {
+	char *underscorePtr;
+	while ((underscorePtr = strchr(binaryString, '_')) != NULL) {
+        memmove(underscorePtr, underscorePtr + 1, strlen(underscorePtr));
+    }
+
     size_t strLength = strlen(binaryString);
     *numBytes = strLength / 8;
 
@@ -56,6 +61,8 @@ char* parseBinaryStringToBytes(const char* binaryString, size_t* numBytes) {
     return bytes;
 }
 
+int swap = 0;
+
 int main(int argc, char **argv) {
 	if (argc == 1) {
 		printf("[Interactive Mode]\nPlease enter a stream of bits (they must be a multiple of 16):\n");
@@ -85,6 +92,7 @@ int main(int argc, char **argv) {
 			free(line);
 		}
 	} else if (argc == 2) {
+		swap = 1;
 		struct nxu8_decoder *decoder = nxu8_init_decoder_file(argv[1]);
 		readFromDecoder(decoder);
 	} else {

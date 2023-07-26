@@ -5,8 +5,15 @@
 #include "lib_nxu8.h"
 
 uint16_t nxu8_read16(struct nxu8_decoder *decoder, uint32_t addr) {
-	uint16_t val = decoder->buf[addr];
-	val |= decoder->buf[addr + 1] << 8;
+	uint16_t val;
+	
+	if (swap) {
+		val = decoder->buf[addr];
+		val |= decoder->buf[addr + 1] << 8;
+	} else {
+		val = decoder->buf[addr] << 8;
+    	val |= decoder->buf[addr + 1];
+	}
 
 	return val;
 }
