@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "lib/lib_nxu8.h"
+#include "lib_nxu8.h"
+#include "lib/linenoise.h"
 
 void readFromDecoder (struct nxu8_decoder *decoder) {
 	uint32_t addr = 0;
@@ -58,17 +59,15 @@ char* parseBinaryStringToBytes(const char* binaryString, size_t* numBytes) {
 int main(int argc, char **argv) {
 	if (argc == 1) {
 		printf("[Interactive Mode]\nPlease enter a stream of bits (they must be a multiple of 16):\n");
-		while (1) {
-			char *line = NULL;
-        	size_t len = 0;
+		linenoiseHistoryLoad("history.txt");
+		linenoiseHistorySetMaxLen(100);
+		
+		char *line;
+        size_t len;
 
-        	if (getline(&line, &len, stdin) < 0) {
-            	free(line);
-            	fprintf(stderr, "Could not read the line\n");
-            	return 1;
-        	}
-
-			line[strcspn(line, "\n")] = '\0';
+		while ((line = linenoise("> "))!= NULL) {
+			linenoiseHistoryAdd(line);
+			linenoiseHistorySave("history.txt");
 
         	if (strcmp(line, "exit") == 0) {
             	free(line);
