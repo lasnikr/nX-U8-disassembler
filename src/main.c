@@ -7,7 +7,7 @@
 
 void readFromDecoder (struct nxu8_decoder *decoder) {
 	uint32_t addr = 0;
-	while (addr <= decoder->buf_sz) {
+	while (addr < decoder->buf_sz) {
 		struct nxu8_instr *instr = nxu8_decode_instr(decoder, addr);
 
 		if (instr != NULL) {
@@ -38,29 +38,63 @@ void hexStringToBytes(char* bytes) {
     }
 }
 
+char* parseBinaryStringToBytes(const char* binaryString, size_t* numBytes) {
+    size_t strLength = strlen(binaryString);
+    *numBytes = strLength / 8;
+
+    if (strLength % 16 != 0) {
+        fprintf(stderr, "Error: Binary string length must be a multiple of 16.\n");
+        return NULL;
+    }
+
+    char* bytes = (char*)malloc(*numBytes);
+    if (!bytes) {
+        fprintf(stderr, "Error: Memory allocation failed.\n");
+        return NULL;
+    }
+
+    for (size_t i = 0; i < *numBytes; i++) {
+        bytes[i] = 0;
+        for (size_t j = 0; j < 8; j++) {
+            if (binaryString[i * 8 + j] == '1') {
+                bytes[i] |= (1 << (7 - j));
+            } else if (binaryString[i * 8 + j] != '0') {
+                fprintf(stderr, "Error: Invalid character in the binary string.\n");
+                free(bytes);
+                return NULL;
+            }
+        }
+    }
+
+    return bytes;
+}
+
 int main(int argc, char **argv) {
 	if (argc == 1) {
+		printf("[Interactive Mode]\nPlease enter a stream of bits (they must be a multiple of 16):\n");
 		while (1) {
 			char *line = NULL;
         	size_t len = 0;
 
-        	printf("Enter a byte stream (type 'exit' to quit): ");
         	if (getline(&line, &len, stdin) < 0) {
             	free(line);
             	fprintf(stderr, "Could not read the line\n");
             	return 1;
         	}
 
-        	if (strcmp(line, "exit\n") == 0) {
+			line[strcspn(line, "\n")] = '\0';
+
+        	if (strcmp(line, "exit") == 0) {
             	free(line);
             	break;
         	}
 
 			len = strlen(line);
 
+			line = parseBinaryStringToBytes(line, &len);
 
-
-			hexStringToBytes(line);
+			if (!line) continue;
+			
 			struct nxu8_decoder *decoder = nxu8_init_decoder(len,(uint8_t *)line);
 			readFromDecoder(decoder);
 			free(line);
