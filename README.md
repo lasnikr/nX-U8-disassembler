@@ -11,4 +11,4 @@ Note that underscores can be used for better orientation, but the input is valid
 The 16 bits are then parsed into two bytes and read by the disassembler.
 
 The interactive mode can be extremely useful for understanding the underlying structure of nX-U8/100 Assembly and can also be used for debugging.
-It also supports a command history (saved inside `history.txt`).
+A command history and everything you would normally expect from a terminal emulator is also supported. Press the up arrow to access your last command. The history is stored inside `history.txt`.
